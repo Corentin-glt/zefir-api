@@ -22,7 +22,6 @@ type UsersConnection {
 
 type Query {
   usersConnection(paginationInput: PaginationDTO!): UsersConnection!
-  anagram(id: Int!): Anagram!
 }
 
 input PaginationDTO {
@@ -32,13 +31,8 @@ input PaginationDTO {
 
 type Mutation {
   createUser(userInput: UserCreateDTO!): Users!
-  createAnagram(createAnagramInput: CreateAnagramInput!): Anagram!
 }
 
 input UserCreateDTO {
   email: String!
-}
-
-input CreateAnagramInput {
-  user_id: String!
 }
