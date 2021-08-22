@@ -2,10 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Anagram {
+  id: String!
+  user_id: String!
+  user: Users!
+}
+
 type Users {
   id: String!
   email: String!
   fib: Float!
+  anagram: Anagram!
 }
 
 type UsersConnection {
@@ -15,6 +22,7 @@ type UsersConnection {
 
 type Query {
   usersConnection(paginationInput: PaginationDTO!): UsersConnection!
+  anagram(id: Int!): Anagram!
 }
 
 input PaginationDTO {
@@ -24,8 +32,13 @@ input PaginationDTO {
 
 type Mutation {
   createUser(userInput: UserCreateDTO!): Users!
+  createAnagram(createAnagramInput: CreateAnagramInput!): Anagram!
 }
 
 input UserCreateDTO {
   email: String!
+}
+
+input CreateAnagramInput {
+  user_id: String!
 }

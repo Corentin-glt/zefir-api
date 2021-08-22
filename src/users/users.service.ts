@@ -8,11 +8,14 @@ import { fibonacci, randomNumberFromInterval } from 'src/utils/function';
 import { UserCreateDTO } from './dto/create-user.input';
 import { PaginationDTO } from './dto/pagination.input';
 import { Users } from './entities/users.entity';
+import { AnagramsService } from 'src/anagrams/anagrams.service';
+import { Anagram } from 'src/anagrams/entities/anagram.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users) private usersRepository: Repository<Users>,
+    private anagramService: AnagramsService,
   ) {}
 
   async find(pagination: PaginationDTO): Promise<Users[]> {
@@ -43,10 +46,9 @@ export class UsersService {
     }
 
     const existingUser = await this.usersRepository.findOne({ email });
-
-    //TODO: check associated Map (anagram)
     if (existingUser) {
-      throw new Error('This user already exists');
+      const existingAnagram = await this.getAnagram(existingUser.id);
+      if (existingAnagram) throw new Error('This user already exists');
     }
 
     const randomNumber = randomNumberFromInterval(50, 51);
@@ -55,6 +57,12 @@ export class UsersService {
       fib: fibonacci(randomNumber),
     });
 
-    return this.usersRepository.save(newUser);
+    const userSaved = await this.usersRepository.save(newUser);
+    await this.anagramService.create({ user_id: userSaved.id });
+    return userSaved;
+  }
+
+  getAnagram(userId: string): Promise<Anagram> {
+    return this.anagramService.findOneByUser(userId);
   }
 }

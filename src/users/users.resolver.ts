@@ -1,4 +1,11 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Resolver,
+  ResolveField,
+} from '@nestjs/graphql';
+import { Anagram } from 'src/anagrams/entities/anagram.entity';
 
 import { UserCreateDTO } from './dto/create-user.input';
 import { Users } from './entities/users.entity';
@@ -11,5 +18,10 @@ export class UsersResolver {
   @Mutation(() => Users, { name: 'createUser' })
   create(@Args('userInput') user: UserCreateDTO) {
     return this.usersService.create(user);
+  }
+
+  @ResolveField(() => Anagram)
+  anagram(@Parent() parent: Users) {
+    return this.usersService.getAnagram(parent.id);
   }
 }
