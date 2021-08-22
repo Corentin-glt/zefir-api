@@ -14,7 +14,7 @@ export class AnagramsService {
 
   async create(createAnagramInput: CreateAnagramInput): Promise<Anagram> {
     // return new Promise((resolve, reject) => {
-    //   writeAnagramsFile(4, `${createAnagramInput.user_id}.txt`, resolve);
+    //   writeAnagramsFile(60, `${createAnagramInput.user_id}.txt`, resolve);
     // }).then(() => {
     // });
     const anagram = this.anagramRepository.create({
