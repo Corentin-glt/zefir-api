@@ -8,12 +8,22 @@ type Users {
   fib: Float!
 }
 
+type UsersConnection {
+  count: Int!
+  items: [Users!]!
+}
+
 type Query {
-  getUsers: [Users!]!
+  usersConnection(paginationInput: PaginationDTO!): UsersConnection!
+}
+
+input PaginationDTO {
+  limit: Float!
+  offset: Float!
 }
 
 type Mutation {
-  createUser(user: UserCreateDTO!): Users!
+  createUser(userInput: UserCreateDTO!): Users!
 }
 
 input UserCreateDTO {

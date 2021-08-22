@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { fibonacci, randomNumberFromInterval } from 'src/utils/function';
+import { omitBy, isUndefined } from 'lodash';
 import { Repository } from 'typeorm';
-import { UserCreateDTO } from './dto/create-user.input';
 
+import { fibonacci, randomNumberFromInterval } from 'src/utils/function';
+
+import { UserCreateDTO } from './dto/create-user.input';
+import { PaginationDTO } from './dto/pagination.input';
 import { Users } from './entities/users.entity';
 
 @Injectable()
@@ -12,8 +15,23 @@ export class UsersService {
     @InjectRepository(Users) private usersRepository: Repository<Users>,
   ) {}
 
-  find(): Promise<Users[]> {
-    return this.usersRepository.find();
+  async find(pagination: PaginationDTO): Promise<Users[]> {
+    const query = omitBy(
+      {
+        order: {
+          id: 'ASC',
+        },
+        skip: pagination.offset,
+        take: pagination.limit,
+      },
+      isUndefined,
+    );
+
+    return this.usersRepository.find(query);
+  }
+
+  count() {
+    return this.usersRepository.count();
   }
 
   async create(user: UserCreateDTO): Promise<Users> {
